@@ -7,14 +7,18 @@
    ```
 2. Install dependencies
    ```sh
+   poetry shell
+   ```
+3. Install dependencies
+   ```sh
    cd pygeoapi-dev-mod && poetry install
    ```
-3. Set environment variables in`example-config.yml`
+4. Set environment variables in`example-config.yml`
    ```sh
    export PYGEOAPI_CONFIG=example-config.yml
    ```
 
-3. run the server
+5. run the server
    ```sh
    python3 pygeoapi-dev/run.py
    ```
