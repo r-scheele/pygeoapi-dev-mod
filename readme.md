@@ -5,9 +5,9 @@
    ```sh
    git clone https://github.com/r-scheele/pygeoapi-dev-mod.git
    ```
-2. Install PIP packages
+2. Install dependencies
    ```sh
-   poetry install
+   cd pygeoapi-dev-mod && poetry install
    ```
 3. Set environment variables in`example-config.yml`
    ```sh
@@ -16,6 +16,6 @@
 
 3. run the server
    ```sh
-   python3 run.py
+   python3 pygeoapi-dev/run.py
    ```
 
