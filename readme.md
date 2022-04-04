@@ -5,7 +5,7 @@
    ```sh
    git clone https://github.com/r-scheele/pygeoapi-dev-mod.git
    ```
-2. Install dependencies
+2. activate the virtual environment - make sure poetry is added to PATH
    ```sh
    poetry shell
    ```
