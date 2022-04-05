@@ -5,13 +5,13 @@
    ```sh
    git clone https://github.com/r-scheele/pygeoapi-dev-mod.git
    ```
-2. activate the virtual environment - make sure poetry is added to PATH
-   ```sh
-   poetry shell
-   ```
-3. Install dependencies
+2. Install dependencies
    ```sh
    cd pygeoapi-dev-mod && poetry install
+   ```
+3. activate the virtual environment - make sure poetry is added to PATH
+   ```sh
+   poetry shell
    ```
 4. Set environment variables in`example-config.yml`
    ```sh
