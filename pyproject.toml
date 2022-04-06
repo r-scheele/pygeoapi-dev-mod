@@ -7,8 +7,8 @@ authors = ["r-scheele <abdulrahmanolamilekan88@gmail.com>"]
 [tool.poetry.dependencies]
 python = "^3.8"
 pygeoapi = "^0.12.0"
-fastapi = "^0.75.1"
 uvicorn = "^0.17.6"
+authx = "^0.4.0"
 
 [tool.poetry.dev-dependencies]
 pytest = "^5.2"

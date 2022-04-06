@@ -1,31 +1,19 @@
-# from authx import JWTBackend, RedisBackend
+from authx import JWTBackend, RedisCacheBackend
 from fastapi import APIRouter, Depends
-from fastapi.security import HTTPBearer
-from starlette.config import Config
+from fastapi.security import OAuth2PasswordBearer
 
-config = Config(".env")
+SecurityConfig = JWTBackend(
+    cache_backend=RedisCacheBackend(host='localhost', port=6379),
+    private_key=("private_key"),
+    public_key=("public_key"),
+    access_token_expiration=3600,
+    refresh_token_expiration=3600
+)
 
-# SecurityConfig = JWTBackend(
-#     cache_backend=RedisBackend,
-#     private_key=config("PRIVATE_KEY", default="private_key"),
-#     public_key=config("PUBLIC_KEY", default="public_key"),
-#     access_expiration=3600,
-#     refresh_expiration=3600
-# )
 
-oauth_token_scheme = HTTPBearer()
 router = APIRouter()
+oauth2_scheme = OAuth2PasswordBearer(tokenUrl="token")
 
-
-# Set Anonymous User
-@router.get("/anonym")
-def anonym_test():
-    pass
-
-
-# Set Authenticated User
-@router.get("/user")
-async def user_test(token=Depends(oauth_token_scheme)):
-    # is_verified = await SecurityConfig.decode_token(token)
-    # print(is_verified)
+@router.get("/potected")
+async def get_potected(token = Depends(oauth2_scheme)):
     pass
