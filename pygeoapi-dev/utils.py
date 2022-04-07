@@ -8,11 +8,12 @@ from pygeoapi.util import yaml_load
 
 if "PYGEOAPI_CONFIG" not in os.environ:
     raise RuntimeError("PYGEOAPI_CONFIG environment variable not set")
+
 with open(os.environ.get("PYGEOAPI_CONFIG"), encoding="utf-8") as f:
     CONFIG = yaml_load(f)
 
-with open("example-config.yml", encoding='utf8') as ff:
-    if "example-config.yml".endswith(('.yaml', '.yml')):
+with open(os.environ.get("PYGEOAPI_OPENAPI"), encoding='utf8') as ff:
+    if os.environ.get("PYGEOAPI_OPENAPI").endswith(('.yaml', '.yml')):
         openapi_ = yaml_load(ff)
     else:  # JSON file, do not transform
         openapi_ = ff
