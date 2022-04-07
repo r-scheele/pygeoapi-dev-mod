@@ -1,3 +1,5 @@
 .idea
 __pycached_
 pygeoapi-dev/__pycache__/
+environment.env
+.env
