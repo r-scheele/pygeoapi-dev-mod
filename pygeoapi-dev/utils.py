@@ -1,9 +1,7 @@
-import json
 import os
 
 from fastapi import FastAPI
 from fastapi.openapi.utils import get_openapi
-
 from pygeoapi.util import yaml_load
 
 if "PYGEOAPI_CONFIG" not in os.environ:
@@ -19,9 +17,6 @@ with open(os.environ.get("PYGEOAPI_OPENAPI"), encoding='utf8') as ff:
         openapi_ = ff
 
 
-# api = API(CONFIG)
-
-
 def custom_openapi(app: FastAPI):
     if app.openapi_schema:
         return app.openapi_schema
@@ -30,18 +25,5 @@ def custom_openapi(app: FastAPI):
         version="0.1.0",
         routes=app.routes
     )
-
-    # custom json file for testing
-    with open("openapi.json", "r") as file:
-        res = json.load(file)
-
-    openapi_schema["info"] = res["info"]
-    openapi_schema["paths"] = res["paths"]
-    openapi_schema["components"] = res["components"]
-    openapi_schema["servers"] = res["servers"]
-    openapi_schema["tags"] = res["tags"]
-    openapi_schema["openapi"] = res["openapi"]
-
-    app.openapi_schema = openapi_schema
-
+    app.openapi_schema = {**openapi_schema, **openapi_}
     return app.openapi_schema
