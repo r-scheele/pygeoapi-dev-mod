@@ -8,7 +8,7 @@ authors = ["r-scheele <abdulrahmanolamilekan88@gmail.com>"]
 python = "^3.8"
 pygeoapi = "^0.12.0"
 uvicorn = "^0.17.6"
-authx = {extras = ["redis"], version = "^0.4.0"}
+fastapi-opa = "^1.3.3"
 
 
 [tool.poetry.dev-dependencies]

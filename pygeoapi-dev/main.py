@@ -1,18 +1,34 @@
 from functools import partial
 
 from fastapi import FastAPI
+from fastapi_opa import OPAMiddleware
 from pygeoapi.starlette_app import app as pygeoapi
+from starlette.middleware.cors import CORSMiddleware
+
+import authenticate
 from utils import custom_openapi
 
 app = FastAPI()
+
+app.include_router(authenticate.router)
 app.openapi = partial(custom_openapi, app)
 
-# app.include_router(utils.router)
 
+origins = [
+    "http://localhost",
+    "http://localhost:8000",
+]
 
-# app.include_router(auth.auth_router, prefix="/api/auth", tags=["auth"])
-# app.include_router(auth.password_router, prefix="/api/password", tags=["password"])
-# app.include_router(auth.admin_router, prefix="/api/admin", tags=["admin"])
-# app.include_router(auth.search_router, prefix="/api/search", tags=["search"])
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=origins,
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
+app.add_middleware(OPAMiddleware,
+                   config=authenticate.opa_config,
+                   skip_endpoints=authenticate.excluded_endpoints)
+
 
 app.mount(path="/v1", app=pygeoapi)
