@@ -27,8 +27,7 @@ app.add_middleware(
     allow_headers=["*"],
 )
 app.add_middleware(OPAMiddleware,
-                   config=authenticate.opa_config,
-                   skip_endpoints=authenticate.excluded_endpoints)
+                   config=authenticate.opa_config)
 
 
 app.mount(path="/v1", app=pygeoapi)
