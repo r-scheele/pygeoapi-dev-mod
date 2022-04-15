@@ -1,0 +1,22 @@
+# docker-compose.yml
+
+version: '2'
+services:
+  keycloak:
+    image: jboss/keycloak:latest
+    ports:
+      - "8080:8080"
+    environment:
+      - KEYCLOAK_USER=admin
+      - KEYCLOAK_PASSWORD=admin
+  opa:
+    image: openpolicyagent/opa:latest
+    ports:
+      - "8181:8181"
+    command:
+      - "run"
+      - "--server"
+      - "--log-level=debug"
+      - "/policy/auth.rego"
+    volumes:
+      - ./policy:/policy
