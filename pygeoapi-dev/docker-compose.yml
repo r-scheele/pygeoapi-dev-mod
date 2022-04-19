@@ -20,6 +20,7 @@ services:
       - POSTGRES_USER=postgres
       - POSTGRES_PASSWORD=postgres
   opal_server:
+
     # by default we run opal-server from latest official image
     image: permitio/opal-server:latest
     environment:
@@ -31,7 +32,10 @@ services:
       # - if this repo is not public, you can pass an ssh key via `OPAL_POLICY_REPO_SSH_KEY`)
       # - the repo we pass in this example is *public* and acts as an example repo with dummy rego policy
       # - for more info, see: https://github.com/permitio/opal/blob/master/docs/HOWTO/track_a_git_repo.md
-      - OPAL_POLICY_REPO_URL=https://github.com/r-scheele/opal-policy-example.git
+      - OPAL_POLICY_REPO_URL=git@github.com:r-scheele/opal-policy-example.git
+      - OPAL_POLICY_REPO_SSH_KEY=-----BEGIN OPENSSH PRIVATE KEY-----_b3BlbnNzaC1rZXktdjEAAAAABG5vbmUAAAAEbm9uZQAAAAAAAAABAAAAMwAAAAtzc2gtZW_QyNTUxOQAAACAr/Iv1p6V+vFqIlj+ZcRkwofNTcToFm/Y7H+XoluHkFgAAAKhXfjawV342_sAAAAAtzc2gtZWQyNTUxOQAAACAr/Iv1p6V+vFqIlj+ZcRkwofNTcToFm/Y7H+XoluHkFg_AAAEC/jq2ld1toQXsZY2ovNaijOQnAzt3s/pnjjNCr5V9P6Cv8i/WnpX68WoiWP5lxGTCh_81NxOgWb9jsf5eiW4eQWAAAAIWFiZHVscmFobWFub2xhbWlsZWthbjg4QGdtYWlsLmNvbQ_ECAwQ=_-----END OPENSSH PRIVATE KEY-----
+
+
       # in this example we will use a polling interval of 30 seconds to check for new policy updates (git commits affecting the rego policy).
       # however, it is better to utilize a git *webhook* to trigger the server to check for changes only when the repo has new commits.
       # for more info see: https://github.com/permitio/opal/blob/master/docs/HOWTO/track_a_git_repo.md
@@ -39,7 +43,7 @@ services:
       # configures from where the opal client should initially fetch data (when it first goes up, after disconnection, etc).
       # the data sources represents from where the opal clients should get a "complete picture" of the data they need.
       # after the initial sources are fetched, the client will subscribe only to update notifications sent by the server.
-      - OPAL_DATA_CONFIG_SOURCES={"config":{"entries":[{"url":"http://host.docker.internal:7002/policy-data","topics":["policy_data"],"dst_path":"/static"}]}}
+      - OPAL_DATA_CONFIG_SOURCES={"config":{"entries":[{"url":"http://opal_server:7002/policy-data","topics":["policy_data"],"dst_path":"/static"}]}}
       - OPAL_LOG_FORMAT_INCLUDE_PID=true
     ports:
       # exposes opal server on the host machine, you can access the server at: http://localhost:7002
