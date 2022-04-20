@@ -20,7 +20,7 @@ services:
       - POSTGRES_USER=postgres
       - POSTGRES_PASSWORD=postgres
   opal_server:
-
+    hostname: opal_server
     # by default we run opal-server from latest official image
     image: permitio/opal-server:latest
     environment:
