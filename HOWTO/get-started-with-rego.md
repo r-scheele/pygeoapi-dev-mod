@@ -147,7 +147,7 @@ allow {
 ```
 
 Initially, the rego file contains empty rules as shown below, which means that no access is allowed. 
-any attempt to access different routes will fail, with exception.
+Any attempt to access different routes will fail, with exception.
 ```
 # auth.rego
 
