@@ -146,3 +146,41 @@ allow {
     }
 ```
 
+Initially, the rego file contains empty rules as shown below, which means that no access is allowed. 
+```
+# auth.rego
+
+package httpapi.authz
+
+# HTTP API request
+import input
+
+default allow = false
+```
+
+if certain rules are added to the policy file, such as:
+* allow users from company "aaa" to access the collection "obs"
+
+```
+allow {
+    some collection
+    input.request.path == ["v1","collections", collection]
+    collection == "obs"
+    input.company == "aaa"
+}
+```
+
+* allow users from company "bbb" to access the collection "lakes"
+
+```
+allow {
+    some collection
+    input.request.path == ["v1","collections", collection]
+    collection == "lakes"
+    input.company == "bbb"
+}
+```
+
+If the policy file is updated with the two new policies, as soon as the change is pushed to Github, as a new commit. Opal server will automatically update the policy with the new rules.
+
+check out [this](https://github.com/r-scheele/pygeoapi-dev-mod/blob/opal-server-configuration/HOWTO/simple-opal-setup.md) tutorial on how to update changes with new policies.
