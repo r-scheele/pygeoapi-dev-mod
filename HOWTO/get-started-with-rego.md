@@ -184,4 +184,7 @@ allow {
 
 If the policy file is updated with the two new policies, as soon as the change is pushed to Github, as a new commit. Opal server will automatically update the policy with the new rules.
 
-check out [this](https://github.com/r-scheele/pygeoapi-dev-mod/blob/opal-server-configuration/HOWTO/simple-opal-setup.md) tutorial on how to update changes with new policies.
+check out [this](https://github.com/r-scheele/pygeoapi-dev-mod/blob/opal-server-configuration/HOWTO/simple-opal-setup.md) tutorial on how to update changes with new policies using OPAL.
+
+The example role here is set to private, which means an SSH key is required to access it. It could however be set to public.
+An SSH key is declared in the docker-compose
