@@ -35,7 +35,7 @@ services:
       - OPAL_POLICY_REPO_URL=git@github.com:r-scheele/opal-policy-example.git
       - OPAL_POLICY_REPO_SSH_KEY=-----BEGIN OPENSSH PRIVATE KEY-----_b3BlbnNzaC1rZXktdjEAAAAABG5vbmUAAAAEbm9uZQAAAAAAAAABAAAAMwAAAAtzc2gtZW_QyNTUxOQAAACAr/Iv1p6V+vFqIlj+ZcRkwofNTcToFm/Y7H+XoluHkFgAAAKhXfjawV342_sAAAAAtzc2gtZWQyNTUxOQAAACAr/Iv1p6V+vFqIlj+ZcRkwofNTcToFm/Y7H+XoluHkFg_AAAEC/jq2ld1toQXsZY2ovNaijOQnAzt3s/pnjjNCr5V9P6Cv8i/WnpX68WoiWP5lxGTCh_81NxOgWb9jsf5eiW4eQWAAAAIWFiZHVscmFobWFub2xhbWlsZWthbjg4QGdtYWlsLmNvbQ_ECAwQ=_-----END OPENSSH PRIVATE KEY-----
 
-
+#      - OPAL_POLICY_REPO_WEBHOOK_SECRET=d_XBeW2Y@BD9sXb
       # in this example we will use a polling interval of 30 seconds to check for new policy updates (git commits affecting the rego policy).
       # however, it is better to utilize a git *webhook* to trigger the server to check for changes only when the repo has new commits.
       # for more info see: https://github.com/permitio/opal/blob/master/docs/HOWTO/track_a_git_repo.md

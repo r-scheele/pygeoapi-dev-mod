@@ -5,12 +5,12 @@ from fastapi_opa import OPAMiddleware
 from pygeoapi.starlette_app import app as pygeoapi
 from starlette.middleware.cors import CORSMiddleware
 
-# import authenticate
+import authenticate
 from utils import custom_openapi
 import test
 app = FastAPI()
 
-# app.include_router(authenticate.router)
+app.include_router(authenticate.router)
 app.openapi = partial(custom_openapi, app)
 
 
@@ -28,8 +28,8 @@ app.add_middleware(
 )
 
 app.mount(path="/v1", app=pygeoapi)
-# app.add_middleware(OPAMiddleware, config=authenticate.opa_config,
-#                    skip_endpoints=authenticate.skip_endpoints)
+app.add_middleware(OPAMiddleware, config=authenticate.opa_config,
+                   skip_endpoints=authenticate.skip_endpoints)
 
 
 
