@@ -19,11 +19,11 @@ services:
       - POSTGRES_DB=postgres
       - POSTGRES_USER=postgres
       - POSTGRES_PASSWORD=postgres
-  example_db:
+  db:
       image: postgres:alpine
       restart: always
       environment:
-        - POSTGRES_DB=postgres
+        - POSTGRES_DB=geostore
         - POSTGRES_USER=postgres
         - POSTGRES_PASSWORD=postgres
       logging:
@@ -33,12 +33,12 @@ services:
       ports:
         - '5438:5432'
       volumes:
+        - ./data/postgres:/var/lib/postgresql/data
         # copy the sql script to create tables
         - ./sql/create_tables.sql:/docker-entrypoint-initdb.d/create_tables.sql
-        # copy the sql script to fill tables
-        - ./sql/fill_tables.sql:/docker-entrypoint-initdb.d/fill_tables.sql
   opal_server:
     # by default we run opal-server from latest official image
+    hostname: opal-server
     image: permitio/opal-server:latest
     environment:
       # the broadcast backbone uri used by opal server workers (see comments above for: broadcast_channel)
@@ -59,7 +59,7 @@ services:
       # configures from where the opal client should initially fetch data (when it first goes up, after disconnection, etc).
       # the data sources represents from where the opal clients should get a "complete picture" of the data they need.
       # after the initial sources are fetched, the client will subscribe only to update notifications sent by the server.
-      - OPAL_DATA_CONFIG_SOURCES={"config":{"entries":[{"url":"postgresql://postgres:postgres@example_db:5432/postgres","config":{"fetcher":"PostgresFetchProvider","query":"SELECT * from city;","connection_params":{"password":"postgres"}},"topics":["policy_data"],"dst_path":"cities"}]}}
+      - OPAL_DATA_CONFIG_SOURCES={"config":{"entries":[{"url":"postgresql://geostore:geostore@db:5432/geostore","config":{"fetcher":"PostgresFetchProvider", "query":"select u.name, g.groupname from gs_usergroup_members r join gs_usergroup g on r.group_id = g.id join gs_user u on r.user_id = u.id;", "connection_params":{"password":"geostore"}},"topics":["policy_data"]}]}}
       - OPAL_LOG_FORMAT_INCLUDE_PID=true
     ports:
       # exposes opal server on the host machine, you can access the server at: http://localhost:7002
@@ -84,7 +84,6 @@ services:
       - "8181:8181"
     depends_on:
       - opal_server
-      - example_db
     # this command is not necessary when deploying OPAL for real, it is simply a trick for dev environments
     # to make sure that opal-server is already up before starting the client.
     command: sh -c "./wait-for.sh opal_server:7002 --timeout=20 -- ./start.sh"
