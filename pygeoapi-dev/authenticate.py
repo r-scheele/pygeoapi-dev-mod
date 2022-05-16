@@ -12,7 +12,7 @@ client_id = os.environ.get("KEYCLOAK_CLIENT_ID")
 client_secret = os.environ.get("KEYCLOAK_CLIENT_SECRET")
 
 oidc_config = OIDCConfig(
-    well_known_endpoint="http://localhost:8080/auth/realms/demo/.well-known/openid-configuration",
+    well_known_endpoint="http://localhost:8080/auth/realms/pygeoapi/.well-known/openid-configuration",
     app_uri="http://localhost:8000/v1",
     client_id=client_id,
     client_secret=client_secret,
