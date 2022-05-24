@@ -1,24 +1,33 @@
 
-### Installation
+## Installation
 
 1. Clone the repo
    ```sh
    git clone https://github.com/r-scheele/pygeoapi-dev-mod.git
    ```
-2. Install dependencies
+2. change to project directory and activate virtual environment
    ```sh
-   cd pygeoapi-dev-mod && poetry install
+   cd pygeoapi-dev-mod && poetry shell
    ```
-3. activate the virtual environment - make sure poetry is added to PATH
+
+3. Install gdal
+### For MacOS
+```sh
+   brew install gdal
+   ```
+
+
+4. Install dependencies
    ```sh
-   poetry shell
+   poetry install
    ```
-4. Set environment variables in`example-config.yml`
+
+5. Set environment variables in `example-config.yml`
    ```sh
    export PYGEOAPI_CONFIG=example-config.yml
    ```
 
-5. run the server
+6. run the server
    ```sh
    python3 pygeoapi-dev/run.py
    ```
