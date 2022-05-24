@@ -7,7 +7,6 @@ from starlette.middleware.cors import CORSMiddleware
 
 import authenticate
 from utils import custom_openapi
-
 app = FastAPI()
 
 app.include_router(authenticate.router)

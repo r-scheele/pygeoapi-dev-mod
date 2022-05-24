@@ -1,0 +1,76 @@
+# start the keycloak process with docker to ensure clean terminal
+# docker run -d -p 8080:8080 -e KEYCLOAK_USER='admin' -e KEYCLOAK_PASSWORD='admin' jboss/keycloak:latest
+
+
+version: "3.8"
+services:
+  # When scaling the opal-server to multiple nodes and/or multiple workers, we use
+  # a *broadcast* channel to sync between all the instances of opal-server.
+  # Under the hood, this channel is implemented by encode/broadcaster (see link below).
+  # At the moment, the broadcast channel can be either: postgresdb, redis or kafka.
+  # The format of the broadcaster URI string (the one we pass to opal server as `OPAL_BROADCAST_URI`) is specified here:
+  # https://github.com/encode/broadcaster#available-backends
+  broadcast_channel:
+    image: postgres:alpine
+    environment:
+      - POSTGRES_DB=postgres
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=postgres
+  db:
+      image: postgres:alpine
+      restart: always
+      environment:
+        - POSTGRES_DB=geostore
+        - POSTGRES_USER=postgres
+        - POSTGRES_PASSWORD=postgres
+      logging:
+        options:
+          max-size: 10m
+          max-file: "3"
+      ports:
+        - '5439:5432'
+      volumes:
+        - ./data/postgres:/var/lib/postgresql/data
+        # copy the sql script to create tables
+        - ./sql/create_tables.sql:/docker-entrypoint-initdb.d/create_tables.sql
+  opal_server:
+    # by default we run opal-server from latest official image
+
+    image: permitio/opal-server:latest
+    environment:
+      # the broadcast backbone uri used by opal server workers (see comments above for: broadcast_channel)
+      - OPAL_BROADCAST_URI=postgres://postgres:postgres@broadcast_channel:5432/postgres
+      # number of uvicorn workers to run inside the opal-server container
+      - UVICORN_NUM_WORKERS=4
+      - OPAL_POLICY_REPO_URL=git@github.com:r-scheele/opal-policy-example.git
+      - OPAL_POLICY_REPO_SSH_KEY=-----BEGIN OPENSSH PRIVATE KEY-----_b3BlbnNzaC1rZXktdjEAAAAABG5vbmUAAAAEbm9uZQAAAAAAAAABAAAAMwAAAAtzc2gtZW_QyNTUxOQAAACAr/Iv1p6V+vFqIlj+ZcRkwofNTcToFm/Y7H+XoluHkFgAAAKhXfjawV342_sAAAAAtzc2gtZWQyNTUxOQAAACAr/Iv1p6V+vFqIlj+ZcRkwofNTcToFm/Y7H+XoluHkFg_AAAEC/jq2ld1toQXsZY2ovNaijOQnAzt3s/pnjjNCr5V9P6Cv8i/WnpX68WoiWP5lxGTCh_81NxOgWb9jsf5eiW4eQWAAAAIWFiZHVscmFobWFub2xhbWlsZWthbjg4QGdtYWlsLmNvbQ_ECAwQ=_-----END OPENSSH PRIVATE KEY-----
+
+      - OPAL_POLICY_REPO_POLLING_INTERVAL=10
+      # configures from where the opal client should initially fetch data (when it first goes up, after disconnection, etc).
+      # the data sources represents from where the opal clients should get a "complete picture" of the data they need.
+      # after the initial sources are fetched, the client will subscribe only to update notifications sent by the server.
+      - OPAL_DATA_CONFIG_SOURCES={"config":{"entries":[{"url":"postgresql://geostore:geostore@db:5432/geostore","config":{"fetcher":"PostgresFetchProvider", "query":"select u.name, g.groupname from gs_usergroup_members r join gs_usergroup g on r.group_id = g.id join gs_user u on r.user_id = u.id;", "connection_params":{"password":"geostore"}},"topics":["policy_data"]}]}}
+      - OPAL_LOG_FORMAT_INCLUDE_PID=true
+    ports:
+      # exposes opal server on the host machine, you can access the server at: http://localhost:7002
+      - "7002:7002"
+    depends_on:
+      - broadcast_channel
+  opal_client:
+    # by default we run opal-client from latest official image
+    # image: permitio/opal-client:latest
+    image: pygeoapi-dev/opal-client:latest
+    environment:
+      - OPAL_SERVER_URL=http://opal_server:7002
+      - OPAL_LOG_FORMAT_INCLUDE_PID=true
+      - OPAL_INLINE_OPA_LOG_FORMAT=http
+      - OPAL_FETCH_PROVIDER_MODULES=opal_common.fetcher.providers,opal_fetcher_postgres.provider
+    ports:
+      # exposes opal client on the host machine, you can access the client at: http://localhost:7000
+      - "7000:7000"
+      - "8181:8181"
+    depends_on:
+      - opal_server
+    # this command is not necessary when deploying OPAL for real, it is simply a trick for dev environments
+    # to make sure that opal-server is already up before starting the client.
+    command: sh -c "./wait-for.sh opal_server:7002 --timeout=20 -- ./start.sh"
