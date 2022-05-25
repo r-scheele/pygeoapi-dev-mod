@@ -32,3 +32,36 @@
    python3 pygeoapi-dev/run.py
    ```
 
+
+## Usage
+
+Few containers are needed to run the server.
+
+### 1. Keycloak 
+Intall keycloak on Linux with the following commands:
+
+```sh
+docker run -d -p 8080:8080 -e KEYCLOAK_USER='admin' -e KEYCLOAK_PASSWORD='admin' jboss/keycloak:latest
+
+```
+
+Intall keycloak on Mac M1 with the following commands:
+
+   
+   ```sh
+docker run -d -p 8080:8080 -e KEYCLOAK_USER=admin -e KEYCLOAK_PASSWORD=admin wizzn/keycloak:14
+
+   ```
+
+
+### 2. Build the Postgres-data-fetcher image
+   
+   ```sh
+docker build -t pygeoapi-dev/opal-client -f ./Dockerfile .   
+```
+
+### 3. Run the other containers
+   
+   ```sh
+   docker-compose up -d
+   ```

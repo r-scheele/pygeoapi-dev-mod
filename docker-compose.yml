@@ -69,7 +69,7 @@ services:
       - OPAL_FETCH_PROVIDER_MODULES=opal_common.fetcher.providers,opal_fetcher_postgres.provider
     ports:
       # exposes opal client on the host machine, you can access the client at: http://localhost:7000
-      - "7000:7000"
+      - "7001:7001"
       - "8181:8181"
     depends_on:
       - opal_server
