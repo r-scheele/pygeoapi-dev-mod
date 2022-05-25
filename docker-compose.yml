@@ -1,6 +1,8 @@
-# start the keycloak process with docker to ensure clean terminal
+# start the keycloak process with docker in detach mode to ensure clean terminal
+# For linux, the docker run command is:
 # docker run -d -p 8080:8080 -e KEYCLOAK_USER='admin' -e KEYCLOAK_PASSWORD='admin' jboss/keycloak:latest
-
+# For Mac, the docker run command is:
+# docker run -d -p 8080:8080 -e KEYCLOAK_USER=admin -e KEYCLOAK_PASSWORD=admin wizzn/keycloak:14
 
 version: "3.8"
 services:

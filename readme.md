@@ -24,7 +24,7 @@
 
 5. Set environment variables in `example-config.yml`
    ```sh
-   export PYGEOAPI_CONFIG=example-config.yml
+   export PYGEOAPI_CONFIG=example-config.yml && export PYGEOAPI_OPENAPI=example-openapi.yml
    ```
 
 6. run the server
